@@ -21,9 +21,7 @@
 <body>
     <div id="info">
         <p><strong>Modelo:</strong> Caballero</p>
-        <p><strong>Animación:</strong> Brooklyn UpRock de Mixamo</p>
-            <p><strong>Nombre:</strong> Juan Esteban Castro Barrera</p>
-            <p><strong>Codigo:</strong> 30000125416</p>
+        <p><strong>Animación:</strong> Mixamo</p>
         <p><strong>Archivo:</strong> modelo.glb</p>
     </div>
 
@@ -75,7 +73,7 @@
             angle += 0.005;
             camera.position.x = Math.cos(angle) * 5;
             camera.position.z = Math.sin(angle) * 5;
-            camera.lookAt(0, 1.5, 0);
+            camera.lookAt(0, 3, 0);
 
             renderer.render(scene, camera);
         }
