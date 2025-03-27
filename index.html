@@ -45,3 +45,52 @@
 
         // Renderizador
         renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Controles de órbita
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+
+        // Luz
+        const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
+        light.position.set(0, 10, 0);
+        scene.add(light);
+
+        // Cargar modelo
+        const loader = new THREE.GLTFLoader();
+        loader.load('modelo.glb', function (gltf) {
+            const model = gltf.scene;
+            scene.add(model);
+
+            // Animación
+            mixer = new THREE.AnimationMixer(model);
+            const action = mixer.clipAction(gltf.animations[0]);
+            action.play();
+        });
+
+        // Redimensionar pantalla
+        window.addEventListener('resize', onWindowResize);
+        animate();
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if (mixer) mixer.update(0.016);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+
+    init();
+</script>
+
+</body>
+</html>
