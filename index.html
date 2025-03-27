@@ -3,17 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo Animado con Three.js</title>
-    <script type="module">
-<script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js"
-            }
-        }
-</script>
-
-    </script>
+    <title>Modelo 3D en Three.js</title>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -21,61 +11,46 @@
 </head>
 <body>
     <script type="module">
-        import * as THREE from "three";
-        import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-        import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+        import * as THREE from "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js";
+        import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js";
+        import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js";
 
         // Escena
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB); // Azul cielo
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 2, 5);
 
-        // Cámara
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(0, 5, 10);
-
-        // Renderizador
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Luz en la escena
-        const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
+        // Luz
+        const light = new THREE.DirectionalLight(0xffffff, 2);
+        light.position.set(5, 5, 5);
         scene.add(light);
 
-        // Cargar el modelo GLB
+        // Cargar modelo GLB
         const loader = new GLTFLoader();
-        loader.load("modelo.glb", function (gltf) {  // Cambia la ruta si está en una carpeta
+        loader.load("modelo.glb", function (gltf) {
             const model = gltf.scene;
+            model.position.set(0, 0, 0);
             scene.add(model);
-
-            // Configuración de animación
-            const mixer = new THREE.AnimationMixer(model);
-            if (gltf.animations.length > 0) {
-                const action = mixer.clipAction(gltf.animations[0]);
-                action.play();
-            }
-
-            // Loop de animación
-            const clock = new THREE.Clock();
-            function animate() {
-                requestAnimationFrame(animate);
-                mixer.update(clock.getDelta());
-                renderer.render(scene, camera);
-            }
-            animate();
+            console.log("✅ Modelo cargado correctamente");
         }, undefined, function (error) {
-            console.error("Error al cargar el modelo:", error);
+            console.error("❌ Error al cargar el modelo:", error);
         });
 
         // Controles de cámara
-        new OrbitControls(camera, renderer.domElement);
+        const controls = new OrbitControls(camera, renderer.domElement);
 
-        // Ajustar tamaño de la pantalla al redimensionar ventana
-        window.addEventListener("resize", () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        // Animación
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 </body>
 </html>
+
