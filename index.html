@@ -15,13 +15,24 @@
             padding: 10px;
             border-radius: 5px;
             font-size: 14px;
+            width: 220px;
+        }
+        #info p { margin: 5px 0; }
+        input {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
     <div id="info">
-        <p><strong>Modelo:</strong> Caballero</p>
-        <p><strong>Animación:</strong> Mixamo</p>
+        <p><strong>Modelo:</strong> <input type="text" id="nombreModelo" value="Caballero"></p>
+        <p><strong>Animación:</strong> Brooklyn UpRock de Mixamo</p>
+            <p><strong>Nombre:</strong> Juan Esteban Castro Barrera</p>
+            <p><strong>Codigo:</strong> 30000125416</p>
         <p><strong>Archivo:</strong> modelo.glb</p>
     </div>
 
@@ -32,6 +43,7 @@
         let scene, camera, renderer, mixer, model;
         let clock = new THREE.Clock();
         let angle = 0;
+        let radius = 2.5; // Ajusté la distancia de la cámara
 
         function init() {
             // Escena
@@ -40,7 +52,7 @@
 
             // Cámara
             camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-            camera.position.set(5, 3, 5);
+            camera.position.set(radius, 2, radius);
 
             // Renderizador
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -67,4 +79,25 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (mixer) mixer.update
+            if (mixer) mixer.update(clock.getDelta());
+
+            // Movimiento de la cámara en círculo (más cerca)
+            angle += 0.005;
+            camera.position.x = Math.cos(angle) * radius;
+            camera.position.z = Math.sin(angle) * radius;
+            camera.lookAt(0, 1.5, 0);
+
+            renderer.render(scene, camera);
+        }
+
+        // Ajuste de tamaño en ventana
+        window.addEventListener("resize", () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        init();
+    </script>
+</body>
+</html>
