@@ -30,20 +30,18 @@
 <body>
     <div id="info">
         <p><strong>Modelo:</strong> <input type="text" id="nombreModelo" value="Caballero"></p>
-        <p><strong>Animación:</strong> Brooklyn UpRock de Mixamo</p>
-            <p><strong>Nombre:</strong> Juan Esteban Castro Barrera</p>
-            <p><strong>Codigo:</strong> 30000125416</p>
+        <p><strong>Código:</strong> <input type="text" id="codigoModelo" placeholder="Ingrese código"></p>
+        <p><strong>Animación:</strong> Mixamo</p>
         <p><strong>Archivo:</strong> modelo.glb</p>
     </div>
 
     <script type="module">
         import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
         import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/loaders/GLTFLoader.js";
+        import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/controls/OrbitControls.js";
 
-        let scene, camera, renderer, mixer, model;
+        let scene, camera, renderer, mixer, model, controls;
         let clock = new THREE.Clock();
-        let angle = 0;
-        let radius = 2.5; // Ajusté la distancia de la cámara
 
         function init() {
             // Escena
@@ -52,22 +50,30 @@
 
             // Cámara
             camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-            camera.position.set(radius, 2, radius);
+            camera.position.set(0, 2, 3); // Cámara más cercana y centrada
 
             // Renderizador
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
+            // Controles de cámara con el mouse
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Movimiento suave
+            controls.target.set(0, 1, 0); // Apunta al centro del modelo
+
             // Luz
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(3, 5, 3);
             scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040)); // Luz ambiental
 
             // Cargar modelo GLB
             const loader = new GLTFLoader();
             loader.load("modelo.glb", function (gltf) {
                 model = gltf.scene;
+                model.position.set(0, 0, 0);
+                model.scale.set(1, 1, 1); // Ajustar tamaño si es necesario
                 scene.add(model);
 
                 mixer = new THREE.AnimationMixer(model);
@@ -81,12 +87,7 @@
             requestAnimationFrame(animate);
             if (mixer) mixer.update(clock.getDelta());
 
-            // Movimiento de la cámara en círculo (más cerca)
-            angle += 0.005;
-            camera.position.x = Math.cos(angle) * radius;
-            camera.position.z = Math.sin(angle) * radius;
-            camera.lookAt(0, 1.5, 0);
-
+            controls.update(); // Permite rotar con el mouse
             renderer.render(scene, camera);
         }
 
