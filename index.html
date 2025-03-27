@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo Animado</title>
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js",
-            "three/examples/": "https://cdn.jsdelivr.net/npm/three@latest/examples/"
-        }
-    }
+    <title>Modelo Animado con Three.js</title>
+    <script type="module">
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js";
+    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js";
+    import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js";
+</script>
+
     </script>
     <style>
         body { margin: 0; overflow: hidden; }
@@ -25,6 +24,9 @@
 
         // Escena
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Azul cielo
+
+        // Cámara
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(0, 2, 5);
 
@@ -37,9 +39,9 @@
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
         scene.add(light);
 
-        // Cargar el modelo animado
+        // Cargar el modelo GLB
         const loader = new GLTFLoader();
-        loader.load("modelo.glb", function (gltf) {  // Asegúrate de que el archivo está en la raíz
+        loader.load("modelo.glb", function (gltf) {  // Cambia la ruta si está en una carpeta
             const model = gltf.scene;
             scene.add(model);
 
@@ -65,7 +67,7 @@
         // Controles de cámara
         new OrbitControls(camera, renderer.domElement);
 
-        // Ajuste al redimensionar ventana
+        // Ajustar tamaño de la pantalla al redimensionar ventana
         window.addEventListener("resize", () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -74,4 +76,3 @@
     </script>
 </body>
 </html>
-
