@@ -62,22 +62,14 @@
         // Cargar modelo
         const loader = new THREE.GLTFLoader();
         loader.load('modelo.glb', function (gltf) {
-            
-               const model = gltf.scene;
-    scene.add(model);
+            const model = gltf.scene;
+            scene.add(model);
 
-    model.scale.set(2, 2, 2); // Ajusta el tamaño
-    model.position.set(0, -1, 0); // Ajusta la posición
-
-    mixer = new THREE.AnimationMixer(model);
-    const action = mixer.clipAction(gltf.animations[0]);
-    action.play();
-});
             // Animación
             mixer = new THREE.AnimationMixer(model);
             const action = mixer.clipAction(gltf.animations[0]);
             action.play();
-        })
+        });
 
         // Redimensionar pantalla
         window.addEventListener('resize', onWindowResize);
