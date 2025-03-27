@@ -39,7 +39,7 @@
 
         // Cargar el modelo animado
         const loader = new GLTFLoader();
-        loader.load("modelo.gltf", function (gltf) {  // Asegúrate de que el archivo está en la raíz
+        loader.load("modelo.glb", function (gltf) {  // Asegúrate de que el archivo está en la raíz
             const model = gltf.scene;
             scene.add(model);
 
