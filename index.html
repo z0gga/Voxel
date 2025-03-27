@@ -17,8 +17,6 @@
             font-size: 14px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
     <div id="info">
@@ -26,27 +24,36 @@
         <p><strong>Animación:</strong> Mixamo</p>
         <p><strong>Archivo:</strong> modelo.glb</p>
     </div>
-    <script>
+
+    <script type="module">
+        import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.128/build/three.module.js";
+        import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.128/examples/jsm/loaders/GLTFLoader.js";
+
         let scene, camera, renderer, mixer, model;
         let clock = new THREE.Clock();
         let angle = 0;
 
         function init() {
+            // Escena
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0xeeeeee);
 
+            // Cámara
             camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-            camera.position.set(5, 3, 5); 
+            camera.position.set(5, 3, 5);
 
+            // Renderizador
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
+            // Luz
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(3, 5, 3);
             scene.add(light);
 
-            const loader = new THREE.GLTFLoader();
+            // Cargar modelo GLB
+            const loader = new GLTFLoader();
             loader.load("modelo.glb", function (gltf) {
                 model = gltf.scene;
                 scene.add(model);
@@ -60,24 +67,4 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (mixer) mixer.update(clock.getDelta());
-
-            // Movimiento de la cámara en círculo
-            angle += 0.005;
-            camera.position.x = Math.cos(angle) * 5;
-            camera.position.z = Math.sin(angle) * 5;
-            camera.lookAt(0, 1.5, 0);
-
-            renderer.render(scene, camera);
-        }
-
-        window.addEventListener("resize", () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
-
-        init();
-    </script>
-</body>
-</html>
+            if (mixer) mixer.update
