@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="es">
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <script type="module">
+        loader.load("modelo.glb", function (gltf) { ... });
         import * as THREE from "three";
         import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
         import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
