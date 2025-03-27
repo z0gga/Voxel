@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html lang="es">
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,34 +12,45 @@
         }
     }
     </script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
 </head>
-<body style="margin: 0; overflow: hidden;">
+<body>
     <script type="module">
-        loader.load("modelo.glb", function (gltf) { ... });
         import * as THREE from "three";
         import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
         import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+        // Escena
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(0, 2, 5);
 
+        // Renderizador
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
+        // Luz en la escena
         const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
         scene.add(light);
 
+        // Cargar el modelo animado
         const loader = new GLTFLoader();
-        loader.load("modelo.glb", function (gltf) {
+        loader.load("modelo.glb", function (gltf) {  // Asegúrate de que el archivo está en la raíz
             const model = gltf.scene;
             scene.add(model);
 
+            // Configuración de animación
             const mixer = new THREE.AnimationMixer(model);
-            const action = mixer.clipAction(gltf.animations[0]);
-            action.play();
+            if (gltf.animations.length > 0) {
+                const action = mixer.clipAction(gltf.animations[0]);
+                action.play();
+            }
 
+            // Loop de animación
             const clock = new THREE.Clock();
             function animate() {
                 requestAnimationFrame(animate);
@@ -49,9 +58,20 @@
                 renderer.render(scene, camera);
             }
             animate();
+        }, undefined, function (error) {
+            console.error("Error al cargar el modelo:", error);
         });
 
+        // Controles de cámara
         new OrbitControls(camera, renderer.domElement);
+
+        // Ajuste al redimensionar ventana
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
+
